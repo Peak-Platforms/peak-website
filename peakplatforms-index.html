@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Peak Platforms — Real-Time Broadcast Infrastructure</title>
+<meta name="description" content="Peak Platforms builds real-time broadcast infrastructure powering vertical SaaS products across gaming, sports, fitness, and live events."/>
+<link rel="canonical" href="https://peak-platforms.com"/>
+<meta property="og:title" content="Peak Platforms — Real-Time Broadcast Infrastructure"/>
+<meta property="og:description" content="One infrastructure layer. Unlimited verticals."/>
+<meta property="og:url" content="https://peak-platforms.com"/>
+<meta property="og:type" content="website"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black: #080810;
+    --deep: #0e0e1a;
+    --panel: #131320;
+    --panel2: #1a1a2e;
+    --border: #242438;
+    --border2: #2e2e48;
+    --text: #ede8e0;
+    --muted: #7a7a9a;
+    --faint: #3a3a58;
+    --gold: #d4a843;
+    --gold-light: #e8c060;
+    --gold-pale: #d4a84318;
+    --gold-glow: #d4a84330;
+    --cream: #f0e6d0;
+    --red: #c94040;
+    --pink: #e03878;
+    --green: #2ecc8a;
+    --radius: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--black); color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  .cursor {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); position: fixed; pointer-events: none;
+    z-index: 9999; transform: translate(-50%,-50%);
+    transition: width .15s, height .15s, opacity .15s;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid var(--gold); position: fixed; pointer-events: none;
+    z-index: 9998; transform: translate(-50%,-50%);
+    transition: transform .1s ease-out, width .2s, height .2s, border-color .2s;
+    opacity: .5;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background .3s, border-bottom .3s;
+  }
+  nav.scrolled {
+    background: rgba(8,8,16,.94); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none;
+  }
+  .nav-logo-mark {
+    width: 32px; height: 32px;
+    background: var(--gold); clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    flex-shrink: 0;
+  }
+  .nav-logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 600; color: var(--text);
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .nav-logo-text span { color: var(--gold); }
+  .nav-links { display: flex; align-items: center; gap: 36px; }
+  .nav-links a {
+    font-size: 0.82rem; font-weight: 500; color: var(--muted);
+    text-decoration: none; letter-spacing: 1px; transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-contact {
+    font-size: 0.82rem; font-weight: 600; color: var(--gold);
+    text-decoration: none; letter-spacing: 1px;
+    border: 1px solid var(--gold); border-radius: 6px;
+    padding: 8px 22px; transition: all .2s;
+  }
+  .nav-contact:hover { background: var(--gold); color: var(--black); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 140px 60px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse at 70% 50%, #d4a84308 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, #c9404010 0%, transparent 50%);
+  }
+  .hero-grid-lines {
+    position: absolute; inset: 0; pointer-events: none; opacity: .04;
+    background-image:
+      linear-gradient(var(--gold) 1px, transparent 1px),
+      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-bottom: 32px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 3px;
+    color: var(--gold); text-transform: uppercase;
+  }
+  .hero-eyebrow-line { width: 40px; height: 1px; background: var(--gold); }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 7vw, 6.5rem);
+    font-weight: 300; line-height: 1.05; color: var(--text);
+    margin-bottom: 32px; letter-spacing: -1px;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-title strong { font-weight: 700; }
+  .hero-sub {
+    font-size: 1.05rem; color: var(--muted); line-height: 1.8;
+    max-width: 560px; margin-bottom: 52px; font-weight: 400;
+  }
+  .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .btn-gold {
+    background: var(--gold); border: none; border-radius: 6px;
+    color: var(--black); font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 0.88rem; letter-spacing: 1px;
+    padding: 14px 32px; cursor: none; transition: all .2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 30px var(--gold-glow); }
+  .btn-ghost {
+    background: transparent; border: 1px solid var(--border2);
+    border-radius: 6px; color: var(--muted);
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    font-size: 0.88rem; letter-spacing: 1px;
+    padding: 14px 32px; cursor: none; transition: all .2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Hero scroll indicator */
+  .hero-scroll {
+    position: absolute; bottom: 40px; left: 60px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.72rem; letter-spacing: 2px; color: var(--faint); text-transform: uppercase;
+  }
+  .hero-scroll-line {
+    width: 48px; height: 1px; background: var(--faint);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine { 0%,100%{transform:scaleX(1)} 50%{transform:scaleX(.5)} }
+
+  /* Hero vertical text */
+  .hero-vertical {
+    position: absolute; right: 60px; top: 50%; transform: translateY(-50%) rotate(90deg);
+    font-size: 0.68rem; letter-spacing: 4px; color: var(--faint);
+    text-transform: uppercase; white-space: nowrap;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    background: var(--panel); border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 60px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat-item {
+    padding: 0 40px 0 0; border-right: 1px solid var(--border);
+    display: flex; align-items: center; gap: 20px;
+  }
+  .stat-item:last-child { border-right: none; padding-left: 40px; }
+  .stat-item:first-child { padding-left: 0; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem; font-weight: 700; color: var(--gold);
+    line-height: 1; white-space: nowrap;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.5; font-weight: 500; }
+
+  /* ── PLATFORM SECTION ── */
+  .platform { padding: 120px 60px; position: relative; }
+  .platform-inner { max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 3px;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-eyebrow::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--gold); opacity: .5; }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 400; color: var(--text);
+    line-height: 1.15; margin-bottom: 20px;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .section-sub { font-size: 0.95rem; color: var(--muted); max-width: 540px; line-height: 1.8; margin-bottom: 64px; }
+
+  .platform-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .platform-feature {
+    background: var(--panel); padding: 36px 32px;
+    transition: background .3s;
+    position: relative; overflow: hidden;
+  }
+  .platform-feature::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--gold);
+    transform: scaleX(0); transition: transform .3s;
+  }
+  .platform-feature:hover { background: var(--panel2); }
+  .platform-feature:hover::before { transform: scaleX(1); }
+  .pf-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem; font-weight: 300; color: var(--border2);
+    line-height: 1; margin-bottom: 20px;
+    transition: color .3s;
+  }
+  .platform-feature:hover .pf-num { color: var(--gold-pale); }
+  .pf-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 10px; letter-spacing: .5px; }
+  .pf-text { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+  /* ── VERTICALS ── */
+  .verticals { padding: 0 60px 120px; }
+  .verticals-inner { max-width: 1200px; margin: 0 auto; }
+  .verticals-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; flex-wrap: wrap; gap: 20px; }
+  .verticals-note { font-size: 0.82rem; color: var(--muted); max-width: 320px; line-height: 1.6; text-align: right; }
+
+  .verticals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .vertical-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px 28px;
+    text-decoration: none; display: flex; flex-direction: column;
+    transition: all .3s; position: relative; overflow: hidden;
+    cursor: none;
+  }
+  .vertical-card::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,.02) 100%);
+  }
+  .vertical-card:hover { transform: translateY(-4px); }
+  .vertical-card.live { border-color: var(--border2); }
+  .vertical-card.live:hover { border-color: var(--gold); box-shadow: 0 16px 48px var(--gold-glow); }
+  .vertical-card.coming { opacity: .5; }
+  .vc-status {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .vc-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+  .vc-status.live-status .vc-status-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .vc-status.live-status { color: var(--green); }
+  .vc-status.dev-status { color: var(--gold); }
+  .vc-status.dev-status .vc-status-dot { background: var(--gold); }
+  .vc-status.soon-status { color: var(--muted); }
+
+  .vc-icon { font-size: 2rem; margin-bottom: 14px; }
+  .vc-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 700; color: var(--text);
+    margin-bottom: 6px; letter-spacing: .5px;
+  }
+  .vc-market { font-size: 0.72rem; font-weight: 600; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .vc-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; flex: 1; }
+  .vc-arrow {
+    margin-top: 20px; font-size: 0.8rem; font-weight: 600;
+    color: var(--gold); letter-spacing: 1px;
+    display: flex; align-items: center; gap: 6px;
+    opacity: 0; transform: translateX(-8px);
+    transition: all .2s;
+  }
+  .vertical-card:hover .vc-arrow { opacity: 1; transform: translateX(0); }
+  .vc-color-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+
+  /* ── MODEL SECTION ── */
+  .model { padding: 120px 60px; background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .model-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .model-content {}
+  .model-tiers { display: flex; flex-direction: column; gap: 12px; }
+  .model-tier {
+    background: var(--panel2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 22px 24px;
+    display: flex; align-items: flex-start; gap: 18px;
+    transition: all .3s;
+  }
+  .model-tier:hover { border-color: var(--gold); }
+  .tier-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  .tier-name { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .tier-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+  .tier-examples { font-size: 0.75rem; color: var(--gold); margin-top: 6px; font-weight: 600; }
+
+  /* ── DIFFERENTIATORS ── */
+  .diff { padding: 120px 60px; }
+  .diff-inner { max-width: 1200px; margin: 0 auto; }
+  .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 60px; }
+  .diff-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px 28px;
+    display: flex; gap: 20px; align-items: flex-start;
+    transition: border-color .3s;
+  }
+  .diff-card:hover { border-color: var(--border2); }
+  .diff-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .diff-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .diff-text { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+  .diff-highlight { color: var(--gold); font-weight: 600; }
+
+  /* ── CONTACT / CTA ── */
+  .cta {
+    padding: 120px 60px;
+    background: var(--panel2);
+    border-top: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .cta::before {
+    content: '';
+    position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #d4a84312 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-inner { max-width: 700px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    font-weight: 400; color: var(--text); line-height: 1.15; margin-bottom: 20px;
+  }
+  .cta-title em { font-style: italic; color: var(--gold); }
+  .cta-sub { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 48px; }
+  .cta-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; text-align: left; }
+  .cta-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px;
+    transition: border-color .2s;
+  }
+  .cta-card:hover { border-color: var(--gold); }
+  .cta-card-title { font-weight: 700; font-size: 0.88rem; color: var(--text); margin-bottom: 6px; }
+  .cta-card-text { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+  .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 60px; background: var(--black);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .footer-logo { display: flex; align-items: center; gap: 10px; }
+  .footer-logo-mark { width: 20px; height: 20px; background: var(--gold); clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
+  .footer-logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { font-size: 0.78rem; color: var(--faint); text-decoration: none; letter-spacing: 1px; transition: color .2s; }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy { font-size: 0.75rem; color: var(--faint); }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 110px 24px 60px; }
+    .hero-vertical { display: none; }
+    .stats-bar { grid-template-columns: 1fr 1fr; padding: 24px; gap: 24px; }
+    .stat-item { border-right: none; padding: 0; }
+    .platform { padding: 80px 24px; }
+    .platform-grid { grid-template-columns: 1fr; }
+    .verticals { padding: 0 24px 80px; }
+    .verticals-grid { grid-template-columns: 1fr; }
+    .model { padding: 80px 24px; }
+    .model-inner { grid-template-columns: 1fr; gap: 40px; }
+    .diff { padding: 80px 24px; }
+    .diff-grid { grid-template-columns: 1fr; }
+    .cta { padding: 80px 24px; }
+    .cta-cards { grid-template-columns: 1fr; }
+    footer { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-mark"></div>
+    <div class="nav-logo-text">Peak <span>Platforms</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="#platform">Platform</a>
+    <a href="#verticals">Solutions</a>
+    <a href="#model">Licensing</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a class="nav-contact" href="#contact">Enterprise Inquiry</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow"><div class="hero-eyebrow-line"></div>Real-Time Broadcast Infrastructure</div>
+    <h1 class="hero-title">
+      The platform<br/>
+      <em>beneath</em> the<br/>
+      <strong>broadcast.</strong>
+    </h1>
+    <p class="hero-sub">Peak Platforms builds the real-time broadcast engine that powers vertical SaaS products across gaming, sports, fitness, worship, and live events. One infrastructure layer. Unlimited verticals.</p>
+    <div class="hero-actions">
+      <a class="btn-gold" href="#verticals">View Solutions</a>
+      <a class="btn-ghost" href="#contact">Licensing Inquiry</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="hero-scroll-line"></div>Scroll</div>
+  <div class="hero-vertical">peak-platforms.com · Real-Time Broadcast Infrastructure</div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div>
+      <div class="stat-num">3</div>
+      <div class="stat-label">Live Vertical Products</div>
+    </div>
+  </div>
+  <div class="stat-item">
+    <div>
+      <div class="stat-num">0s</div>
+      <div class="stat-label">Broadcast Delivery Latency</div>
+    </div>
+  </div>
+  <div class="stat-item">
+    <div>
+      <div class="stat-num">No App</div>
+      <div class="stat-label">Download Required</div>
+    </div>
+  </div>
+  <div class="stat-item" style="padding-left:40px;">
+    <div>
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Vertical Applications</div>
+    </div>
+  </div>
+</div>
+
+<!-- PLATFORM -->
+<section class="platform" id="platform">
+  <div class="platform-inner">
+    <div class="fade-up">
+      <div class="section-eyebrow">The Engine</div>
+      <h2 class="section-title">One infrastructure.<br/><em>Every industry.</em></h2>
+      <p class="section-sub">The Peak Platforms broadcast engine powers real-time one-to-many communication between a controller and any number of connected devices — no app download, no server infrastructure, no friction.</p>
+    </div>
+    <div class="platform-grid fade-up">
+      <div class="platform-feature">
+        <div class="pf-num">01</div>
+        <div class="pf-title">Real-Time Broadcast</div>
+        <div class="pf-text">Alerts, tickers, banners, and audio fire from a single controller to every connected device simultaneously. Zero perceptible delay. Works on any phone browser.</div>
+      </div>
+      <div class="platform-feature">
+        <div class="pf-num">02</div>
+        <div class="pf-title">Live Audio Layer</div>
+        <div class="pf-text">Directors go on air via AzuraCast integration. Live voice broadcasts alongside visual alerts — guests hear the announcement in their earbuds the moment it fires.</div>
+      </div>
+      <div class="platform-feature">
+        <div class="pf-num">03</div>
+        <div class="pf-title">No App Required</div>
+        <div class="pf-text">Guests connect via QR code in a standard browser. Nothing to install, no account creation, no friction. Average time from scan to connected: 8 seconds.</div>
+      </div>
+      <div class="platform-feature">
+        <div class="pf-num">04</div>
+        <div class="pf-title">Multi-Tenant Architecture</div>
+        <div class="pf-text">Built on Supabase with complete tenant isolation. Each property, gym, or venue operates independently with its own data, teams, and broadcast history.</div>
+      </div>
+      <div class="platform-feature">
+        <div class="pf-num">05</div>
+        <div class="pf-title">White Label Ready</div>
+        <div class="pf-text">Every vertical product can be fully rebranded. Colors, logos, domain, and product name are all configurable. Enterprise clients get their brand on Peak infrastructure.</div>
+      </div>
+      <div class="platform-feature">
+        <div class="pf-num">06</div>
+        <div class="pf-title">Vertical Skinning</div>
+        <div class="pf-text">The same broadcast engine powers cheer gyms, casino floors, sports networks, and houses of worship. Deployment is branding and alert types — the infrastructure is identical.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VERTICALS -->
+<section class="verticals" id="verticals">
+  <div class="verticals-inner">
+    <div class="verticals-header fade-up">
+      <div>
+        <div class="section-eyebrow">Solutions Portfolio</div>
+        <h2 class="section-title">Vertical products<br/><em>built on Peak.</em></h2>
+      </div>
+      <div class="verticals-note">Each solution is a fully branded product running on Peak Platforms infrastructure. Available as licensed SaaS, white label, or enterprise deployment.</div>
+    </div>
+
+    <div class="verticals-grid fade-up">
+
+      <!-- CheerPal -->
+      <a class="vertical-card live" href="https://cheerpal.fun" target="_blank">
+        <div class="vc-color-bar" style="background:linear-gradient(90deg,#FF2D78,#ff6ba8);"></div>
+        <div class="vc-status live-status"><div class="vc-status-dot"></div>Live</div>
+        <div class="vc-icon">📣</div>
+        <div class="vc-name">CheerPal</div>
+        <div class="vc-market">Cheer & Gymnastics</div>
+        <div class="vc-desc">Real-time broadcast platform for cheer and gymnastics gyms. Directors fire alerts to families on competition weekends. Teams, scores, schedule changes — all delivered instantly to parent phones.</div>
+        <div class="vc-arrow">Visit CheerPal →</div>
+      </a>
+
+      <!-- HotSeat -->
+      <a class="vertical-card live" href="hotseat-index.html" target="_blank">
+        <div class="vc-color-bar" style="background:linear-gradient(90deg,#cd181f,#f5cb5c);"></div>
+        <div class="vc-status dev-status"><div class="vc-status-dot"></div>In Development</div>
+        <div class="vc-icon">🔥</div>
+        <div class="vc-name">HotSeat</div>
+        <div class="vc-market">Casino & Gaming</div>
+        <div class="vc-desc">Floor broadcast system for casino properties. Hot seat drawings, jackpot alerts, tournament standings, and live director audio delivered to every guest's phone — no PA dependency, no missed winners.</div>
+        <div class="vc-arrow">View Demo →</div>
+      </a>
+
+      <!-- XSEN -->
+      <a class="vertical-card live" href="#" target="_blank">
+        <div class="vc-color-bar" style="background:linear-gradient(90deg,#1a73e8,#00e5ff);"></div>
+        <div class="vc-status dev-status"><div class="vc-status-dot"></div>In Development</div>
+        <div class="vc-icon">🏈</div>
+        <div class="vc-name">XSEN</div>
+        <div class="vc-market">Sports Entertainment</div>
+        <div class="vc-desc">The Botosphere Sports Entertainment Network. AI-powered fan engagement and broadcast for university sports programs. Live alerts, highlights, NIL micro-donations, and real-time score updates for passionate fan bases.</div>
+        <div class="vc-arrow">Learn More →</div>
+      </a>
+
+      <!-- PulseEMS -->
+      <div class="vertical-card coming">
+        <div class="vc-color-bar" style="background:linear-gradient(90deg,#e65c00,#f9d423);"></div>
+        <div class="vc-status soon-status"><div class="vc-status-dot"></div>Coming Soon</div>
+        <div class="vc-icon">🚒</div>
+        <div class="vc-name">PulseEMS</div>
+        <div class="vc-market">First Responders</div>
+        <div class="vc-desc">Real-time incident broadcast for emergency services. Command broadcasts to field personnel. Designed for first responders — no app, no delay, no lost communications.</div>
+      </div>
+
+      <!-- HouseCall -->
+      <div class="vertical-card coming">
+        <div class="vc-color-bar" style="background:linear-gradient(90deg,#481459,#9c27b0);"></div>
+        <div class="vc-status soon-status"><div class="vc-status-dot"></div>Coming Soon</div>
+        <div class="vc-icon">⛪</div>
+        <div class="vc-name">HouseCall</div>
+        <div class="vc-market">Houses of Worship</div>
+        <div class="vc-desc">Live broadcast platform for churches and faith communities. Pastors fire scripture, giving prompts, and announcements during service. Congregation members receive alerts without disrupting the experience.</div>
+      </div>
+
+      <!-- StageCall -->
+      <div class="vertical-card coming">
+        <div class="vc-color-bar" style="background:linear-gradient(90deg,#11998e,#38ef7d);"></div>
+        <div class="vc-status soon-status"><div class="vc-status-dot"></div>Coming Soon</div>
+        <div class="vc-icon">🎵</div>
+        <div class="vc-name">StageCall</div>
+        <div class="vc-market">Live Events & Concerts</div>
+        <div class="vc-desc">Artist and venue broadcast for concerts and festivals. Set updates, merch alerts, donation prompts, and schedule changes reach every attendee simultaneously — across multiple stages.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- LICENSING MODEL -->
+<section class="model" id="model">
+  <div class="model-inner">
+    <div class="fade-up">
+      <div class="section-eyebrow">Licensing Model</div>
+      <h2 class="section-title">Three ways to<br/><em>build on Peak.</em></h2>
+      <p class="section-sub" style="margin-bottom:0;">Peak Platforms operates as both a direct SaaS provider and an infrastructure licensor. Choose the model that fits your distribution.</p>
+    </div>
+    <div class="model-tiers fade-up">
+      <div class="model-tier">
+        <div class="tier-icon">🏷️</div>
+        <div>
+          <div class="tier-name">Direct SaaS</div>
+          <div class="tier-desc">Subscribe to a vertical product directly. Monthly or annual pricing per location. Designed for small to mid-size operators who want a ready-to-deploy solution.</div>
+          <div class="tier-examples">CheerPal $19–99/mo · HotSeat pricing on request</div>
+        </div>
+      </div>
+      <div class="model-tier">
+        <div class="tier-icon">🏢</div>
+        <div>
+          <div class="tier-name">Enterprise Deployment</div>
+          <div class="tier-desc">Multi-property rollout with custom configuration, onboarding, and support. Ideal for casino groups, sports leagues, and franchise operators deploying across dozens of locations.</div>
+          <div class="tier-examples">Caesars · Multi-property groups · University networks</div>
+        </div>
+      </div>
+      <div class="model-tier">
+        <div class="tier-icon">⚙️</div>
+        <div>
+          <div class="tier-name">White Label License</div>
+          <div class="tier-desc">Deploy the Peak broadcast engine under your own brand. Full rebranding, custom domain, your product identity on Peak infrastructure. Revenue share model with annual platform fee.</div>
+          <div class="tier-examples">Your brand · Your domain · Peak infrastructure</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIFFERENTIATORS -->
+<section class="diff">
+  <div class="diff-inner">
+    <div class="fade-up">
+      <div class="section-eyebrow">Why Peak</div>
+      <h2 class="section-title">What sets the<br/><em>engine apart.</em></h2>
+    </div>
+    <div class="diff-grid fade-up">
+      <div class="diff-card">
+        <div class="diff-icon">🎙️</div>
+        <div>
+          <div class="diff-title">Live Audio Integration</div>
+          <div class="diff-text">The only broadcast platform in any of our verticals that delivers <span class="diff-highlight">live director audio directly to guest earbuds</span> alongside visual alerts. AzuraCast integration built into the engine.</div>
+        </div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">📱</div>
+        <div>
+          <div class="diff-title">Zero Friction Access</div>
+          <div class="diff-text">QR scan to live in under 10 seconds. <span class="diff-highlight">No app download, no account creation, no login.</span> The lowest friction guest experience available in any live event vertical.</div>
+        </div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">🏗️</div>
+        <div>
+          <div class="diff-title">One Engine, Any Vertical</div>
+          <div class="diff-text">New verticals deploy in days, not months. The <span class="diff-highlight">infrastructure is industry-agnostic</span> — only the branding, alert types, and color scheme change. No rebuilding required.</div>
+        </div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">🔒</div>
+        <div>
+          <div class="diff-title">Broadcast-Only Security Model</div>
+          <div class="diff-text">One-directional broadcast eliminates the entire surface area of guest-side security concerns. <span class="diff-highlight">No user data collected, no compliance exposure,</span> no IT review required for deployment.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / CONTACT -->
+<section class="cta" id="contact">
+  <div class="cta-inner fade-up">
+    <div class="section-eyebrow" style="justify-content:center;">Enterprise & Licensing</div>
+    <h2 class="cta-title">Let's build the<br/><em>next vertical.</em></h2>
+    <p class="cta-sub">Whether you're evaluating HotSeat for a casino property, exploring white label licensing, or looking to deploy Peak infrastructure in a new vertical — the conversation starts here.</p>
+    <div class="cta-cards">
+      <div class="cta-card">
+        <div class="cta-card-title">🎰 Casino & Gaming</div>
+        <div class="cta-card-text">HotSeat enterprise deployment for single properties or multi-property casino groups. Caesars, tribal gaming, regional operators.</div>
+      </div>
+      <div class="cta-card">
+        <div class="cta-card-title">⚙️ White Label Licensing</div>
+        <div class="cta-card-text">Deploy the Peak broadcast engine under your brand in any vertical. Annual platform fee plus revenue share. Your product, our infrastructure.</div>
+      </div>
+    </div>
+    <div class="cta-actions">
+      <a class="btn-gold" href="hotseat-index.html" target="_blank">View HotSeat Demo</a>
+      <a class="btn-ghost" href="https://cheerpal.fun" target="_blank">View CheerPal</a>
+    </div>
+    <div style="margin-top:32px;font-size:0.8rem;color:var(--muted);">
+      Peak Platforms is a DBA of Peak Financial Group LLC · Oklahoma City, OK · <a href="https://peak-platforms.com" style="color:var(--gold);text-decoration:none;">peak-platforms.com</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-logo-mark"></div>
+    <div class="footer-logo-text">Peak Platforms</div>
+  </div>
+  <div class="footer-links">
+    <a href="#platform">Platform</a>
+    <a href="#verticals">Solutions</a>
+    <a href="#model">Licensing</a>
+    <a href="https://cheerpal.fun" target="_blank">CheerPal</a>
+    <a href="hotseat-index.html" target="_blank">HotSeat</a>
+  </div>
+  <div class="footer-copy">© 2025 Peak Financial Group LLC · peak-platforms.com · All Rights Reserved</div>
+</footer>
+
+<script>
+  // ── CURSOR ──
+  const cursor     = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animateCursor() {
+    rx += (mx - rx) * .12; ry += (my - ry) * .12;
+    cursor.style.left     = mx + 'px'; cursor.style.top      = my + 'px';
+    cursorRing.style.left = rx + 'px'; cursorRing.style.top  = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.width='14px'; cursor.style.height='14px'; cursorRing.style.width='48px'; cursorRing.style.height='48px'; cursorRing.style.borderColor='var(--gold-light)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.width='8px'; cursor.style.height='8px'; cursorRing.style.width='32px'; cursorRing.style.height='32px'; cursorRing.style.borderColor='var(--gold)'; });
+  });
+
+  // ── NAV SCROLL ──
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); });
+
+  // ── FADE UP ON SCROLL ──
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Trigger hero elements immediately
+  document.querySelector('.hero-content').classList.add('fade-up', 'visible');
+</script>
+</body>
+</html>
